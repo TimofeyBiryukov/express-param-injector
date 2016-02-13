@@ -112,17 +112,17 @@ Injector.prototype.getInjections = function() {
 
 /**
  *
- * @param {?Array.<string>} arguments
+ * @param {?Array.<string>} argumentNames
  * @return {Array.<string|number|boolean>}
  */
-Injector.prototype.injectParameters = function(arguments) {
+Injector.prototype.injectParameters = function(argumentNames) {
   var self = this;
 
-  if (!arguments.length) {
-    arguments = [arguments];
+  if (!argumentNames.length) {
+    argumentNames = [argumentNames];
   }
 
-  return arguments.map(function(paramName) {
+  return argumentNames.map(function(paramName) {
     if (paramName === 'req' || paramName === 'request') {
       return self.req;
     }
