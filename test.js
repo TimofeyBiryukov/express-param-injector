@@ -38,9 +38,10 @@ app.post('/testTypesInjection', Injector.IC(
 }));
 
 
-app.get('/testReqResPresets', Injector.IC(function(req, res) {
+app.get('/testReqResPresets', Injector.IC(function(req, res, next) {
   console.assert(req.method);
   console.assert(res.end);
+  console.assert(typeof next === 'function');
   res.end();
 }));
 
