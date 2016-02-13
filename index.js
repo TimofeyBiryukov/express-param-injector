@@ -132,6 +132,9 @@ Injector.prototype.extractParameters = function(paramNames) {
     if (paramName === 'next') {
       return self.next;
     }
+    if (paramName === 'self') {
+      return self;
+    }
 
     return self.req.params[paramName] ||
         self.req.query[paramName] ||

@@ -59,7 +59,9 @@ Constructor.prototype.checkId = function(id) {
   return id.toString() === (1234).toString();
 };
 
-app.get('/testOptScope', Injector.IC(function(id, res) {
+app.get('/testOptScope', Injector.IC(function(id, res, self) {
+  console.assert(self.res.end);
+
   if (this.checkId(id)) {
     res.status(200);
   } else {
