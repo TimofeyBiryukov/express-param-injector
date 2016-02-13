@@ -143,12 +143,18 @@ Injector.prototype.extractParameters = function(paramNames) {
 
 /**
  * @param {string} paramName
+ * @param {?*} opt_default
  * @return {*}
  */
-Injector.prototype.getReqParam = function(paramName) {
+Injector.prototype.getReqParam = function(paramName, opt_default) {
+  var body;
+  if (this.req.body) {
+    body = this.req.body[paramName];
+  }
+
   return this.req.params[paramName] ||
       this.req.query[paramName] ||
-      this.req.body[paramName];
+      body || opt_default;
 };
 
 
