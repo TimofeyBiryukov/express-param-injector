@@ -1,0 +1,13 @@
+{
+  "name": "express-param-injector",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "express": "^4.13.4"
+  },
+  "scripts": {
+    "test": "node test"
+  },
+  "author": "Timofey Biryukov <timofeybiryukov@gmail.com>"
+}
