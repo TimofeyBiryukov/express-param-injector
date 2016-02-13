@@ -165,6 +165,10 @@ req = http.get('http://127.0.0.1:' + PORT + '/testReqResPresets', function test(
 });
 
 
+/**
+ * testing mixed param injection
+ * req, res + query and body params
+ */
 req = http.request({
   hostname: '127.0.0.1',
   port: PORT,
