@@ -106,7 +106,7 @@ Injector.prototype.checkInit = function() {
  * @return {Array.<string|number|boolean>}
  */
 Injector.prototype.getInjections = function() {
-  return this.extractParameters(Injector.extractArgs(this.fn));
+  return this.injectParameters(Injector.extractArgs(this.fn));
 };
 
 
@@ -115,7 +115,7 @@ Injector.prototype.getInjections = function() {
  * @param {?Array.<string>} paramNames
  * @return {Array.<string|number|boolean>}
  */
-Injector.prototype.extractParameters = function(paramNames) {
+Injector.prototype.injectParameters = function(paramNames) {
   var self = this;
 
   if (!paramNames.length) {
