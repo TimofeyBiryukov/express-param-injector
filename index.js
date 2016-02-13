@@ -107,6 +107,13 @@ Injector.prototype.extractParameters = function(paramNames) {
   }
 
   return paramNames.map(function(paramName) {
+    if (paramName === 'req' || paramName === 'request') {
+      return self.req;
+    }
+    if (paramName === 'res' || paramName === 'response') {
+      return self.res;
+    }
+
     return self.req.params[paramName] ||
         self.req.query[paramName] ||
         self.req.body[paramName];
