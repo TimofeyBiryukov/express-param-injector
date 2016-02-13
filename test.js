@@ -1,13 +1,18 @@
 
 
 var express = require('express');
+var bodyParser = require('body-parser');
 var http = require('http');
 
 var app = express();
 var Injector = require('./index');
 
+var req;
 
 var PORT = 1333;
+
+
+app.use(bodyParser());
 
 
 app.get('/testInjection', Injector.IC(function(foo, bar) {
@@ -15,9 +20,9 @@ app.get('/testInjection', Injector.IC(function(foo, bar) {
 }));
 
 
-//app.get('/testMultipleInjections', Injector.IC(function(foo, bar) {
-//  this.res.end(foo, bar);
-//}));
+app.post('/testInjection', Injector.IC(function(foo, bar) {
+  this.res.end(foo + ', ' + bar);
+}));
 
 
 app.listen(PORT);
@@ -26,16 +31,41 @@ console.log('http://127.0.0.1:' + PORT);
 console.log('</--- Server lifted --->');
 
 
-/**
- * testing query injection
- */
-http.get('http://127.0.0.1:' + PORT + '/testInjection?foo=bar&bar=foo', function(res) {
-  console.log('<--- request /test --->');
+
+function test(res) {
+  console.log('<--- test ' + res.req.method +
+      ' ' + res.req.path +
+      ' --->');
   console.log(res.statusCode);
+  res.setEncoding('utf8');
   res.on('data', function(buffer) {
     var body = buffer.toString();
     console.log(body);
     console.assert(body === 'bar, foo');
-    console.log('</--- request /test --->');
+    console.log('</--- test ' + res.req.method +
+      ' ' + res.req.path +
+      ' --->');
   });
-});
+}
+
+
+/**
+ * testing query injection
+ */
+req = http.get('http://127.0.0.1:' + PORT + '/testInjection?foo=bar&bar=foo', test);
+
+
+req = http.request({
+  hostname: '127.0.0.1',
+  port: PORT,
+  path: '/testInjection',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+}, test);
+req.write(JSON.stringify({
+  'foo': 'bar',
+  'bar': 'foo'
+}));
+req.end();

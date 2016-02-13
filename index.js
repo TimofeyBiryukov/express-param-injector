@@ -107,7 +107,9 @@ Injector.prototype.extractParameters = function(paramNames) {
   }
 
   return paramNames.map(function(paramName) {
-    return self.req.params[paramName] || self.req.query[paramName];
+    return self.req.params[paramName] ||
+        self.req.query[paramName] ||
+        self.req.body[paramName];
   });
 };
 
