@@ -11,8 +11,9 @@ var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
  * @param {function} fn
  * @param {?express.request} opt_req
  * @param {?express.response} opt_res
+ * @param {?function} opt_next
  */
-function Injector(fn, opt_req, opt_res) {
+function Injector(fn, opt_req, opt_res, opt_next) {
   /**
    *
    * @type {express.request}
@@ -36,6 +37,12 @@ function Injector(fn, opt_req, opt_res) {
    * @type {?express.response}
    */
   this.res = opt_res;
+
+
+  /**
+   * @type {?function}
+   */
+  this.next = opt_next;
 
   /**
    *
@@ -70,6 +77,15 @@ Injector.prototype.setRes = function(res) {
   this.response = res;
   this.res = res;
   this.checkInited();
+};
+
+
+/**
+ *
+ * @param {function} next
+ */
+Injector.prototype.setNext = function(next) {
+  this.next = next;
 };
 
 
@@ -113,6 +129,9 @@ Injector.prototype.extractParameters = function(paramNames) {
     if (paramName === 'res' || paramName === 'response') {
       return self.res;
     }
+    if (paramName === 'next') {
+      return self.next;
+    }
 
     return self.req.params[paramName] ||
         self.req.query[paramName] ||
@@ -142,9 +161,10 @@ Injector.extractArgs = function(fn) {
  */
 Injector.IC = function(fn) {
   var injector = new Injector(fn);
-  return function(req, res) {
+  return function(req, res, next) {
     injector.setReq(req);
     injector.setRes(res);
+    injector.setNext(next);
     fn.apply(injector, injector.getInjections());
   };
 };
