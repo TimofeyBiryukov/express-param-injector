@@ -1,5 +1,6 @@
 {
   "name": "express-param-injector",
+  "version": "1",
   "description": "",
   "main": "index.js",
   "dependencies": {},
