@@ -112,17 +112,17 @@ Injector.prototype.getInjections = function() {
 
 /**
  *
- * @param {?Array.<string>} paramNames
+ * @param {?Array.<string>} arguments
  * @return {Array.<string|number|boolean>}
  */
-Injector.prototype.injectParameters = function(paramNames) {
+Injector.prototype.injectParameters = function(arguments) {
   var self = this;
 
-  if (!paramNames.length) {
-    paramNames = [paramNames];
+  if (!arguments.length) {
+    arguments = [arguments];
   }
 
-  return paramNames.map(function(paramName) {
+  return arguments.map(function(paramName) {
     if (paramName === 'req' || paramName === 'request') {
       return self.req;
     }
@@ -151,7 +151,6 @@ Injector.prototype.getReqParam = function(paramName, opt_default) {
   if (this.req.body) {
     body = this.req.body[paramName];
   }
-
   return this.req.params[paramName] ||
       this.req.query[paramName] ||
       body || opt_default;
