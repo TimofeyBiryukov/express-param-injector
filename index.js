@@ -65,7 +65,7 @@ function Injector(fn, opt_req, opt_res, opt_next) {
 Injector.prototype.setReq = function(req) {
   this.request = req;
   this.req = req;
-  this.checkInited();
+  this.checkInit();
 };
 
 
@@ -76,7 +76,7 @@ Injector.prototype.setReq = function(req) {
 Injector.prototype.setRes = function(res) {
   this.response = res;
   this.res = res;
-  this.checkInited();
+  this.checkInit();
 };
 
 
@@ -93,7 +93,7 @@ Injector.prototype.setNext = function(next) {
  *
  * @return {boolean}
  */
-Injector.prototype.checkInited = function() {
+Injector.prototype.checkInit = function() {
   this.inited = !!(this.request && this.req &&
       this.response && this.res);
 
@@ -136,10 +136,19 @@ Injector.prototype.extractParameters = function(paramNames) {
       return self;
     }
 
-    return self.req.params[paramName] ||
-        self.req.query[paramName] ||
-        self.req.body[paramName];
+    return self.getReqParam(paramName);
   });
+};
+
+
+/**
+ * @param {string} paramName
+ * @return {*}
+ */
+Injector.prototype.getReqParam = function(paramName) {
+  return this.req.params[paramName] ||
+      this.req.query[paramName] ||
+      this.req.body[paramName];
 };
 
 
