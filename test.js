@@ -52,6 +52,23 @@ app.post('/testMixInjections', Injector.IC(function(id, req, name, res) {
 }));
 
 
+/** @constructor */
+function Constructor() {}
+
+Constructor.prototype.checkId = function(id) {
+  return id.toString() === (1234).toString();
+};
+
+app.get('/testOptScope', Injector.IC(function(id, res) {
+  if (this.checkId(id)) {
+    res.status(200);
+  } else {
+    res.status(400);
+  }
+  res.end();
+}, new Constructor()));
+
+
 app.listen(PORT);
 console.log('<--- Server lifted --->');
 console.log('http://127.0.0.1:' + PORT);
@@ -196,3 +213,14 @@ req.write(JSON.stringify({
   name: 'John'
 }));
 req.end();
+
+
+req = http.get('http://127.0.0.1:' + PORT + '/testOptScope?id=1234', function test(res) {
+  console.log('<--- test ' + res.req.method +
+    ' ' + res.req.path +
+    ' --->');
+  console.assert(res.statusCode === 200);
+  console.log('</--- test ' + res.req.method +
+    ' ' + res.req.path +
+    ' --->');
+});

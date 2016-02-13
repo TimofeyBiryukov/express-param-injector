@@ -157,15 +157,16 @@ Injector.extractArgs = function(fn) {
 /**
  *
  * @param {function} fn
+ * @param {?Object} opt_scope
  * @return {Function}
  */
-Injector.IC = function(fn) {
+Injector.IC = function(fn, opt_scope) {
   var injector = new Injector(fn);
   return function(req, res, next) {
     injector.setReq(req);
     injector.setRes(res);
     injector.setNext(next);
-    fn.apply(injector, injector.getInjections());
+    fn.apply(opt_scope || injector, injector.getInjections());
   };
 };
 
