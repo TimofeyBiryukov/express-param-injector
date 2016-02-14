@@ -1,7 +1,7 @@
 {
   "name": "express-param-injector",
-  "version": "1.0.3",
-  "description": "",
+  "version": "1.0.4",
+  "description": "Parameters injection from arguments for express.js route functions",
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
@@ -11,5 +11,15 @@
   "scripts": {
     "test": "node test"
   },
-  "author": "Timofey Biryukov <timofeybiryukov@gmail.com>"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TimofeyBiryukov/express-param-injector.git"
+  },
+  "author": "Timofey Biryukov <timofeybiryukov@gmail.com>",
+  "keywords": [
+    "express",
+    "injection",
+    "parameters"
+  ],
+  "homepage": "https://github.com/TimofeyBiryukov/express-param-injector"
 }
