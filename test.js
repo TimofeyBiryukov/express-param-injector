@@ -71,6 +71,16 @@ app.get('/testOptScope', Injector.IC(function(id, res, self) {
 }, new Constructor()));
 
 
+app.param('biz', Injector.IC(function(biz, next) {
+  console.assert(biz === 'biz');
+  next();
+}));
+
+app.get('/foo/bar/:biz', Injector.IC(function(biz) {
+  this.res.end(biz);
+}));
+
+
 app.listen(PORT);
 console.log('<--- Server lifted --->');
 console.log('http://127.0.0.1:' + PORT);
@@ -217,11 +227,32 @@ req.write(JSON.stringify({
 req.end();
 
 
+/**
+ * testing optional function scope
+ */
 req = http.get('http://127.0.0.1:' + PORT + '/testOptScope?id=1234', function test(res) {
   console.log('<--- test ' + res.req.method +
     ' ' + res.req.path +
     ' --->');
   console.assert(res.statusCode === 200);
+  console.log('</--- test ' + res.req.method +
+    ' ' + res.req.path +
+    ' --->');
+});
+
+
+/**
+ * testing app.param & path params
+ */
+req = http.get('http://127.0.0.1:' + PORT + '/foo/bar/biz', function test(res) {
+  console.log('<--- test ' + res.req.method +
+    ' ' + res.req.path +
+    ' --->');
+  console.assert(res.statusCode === 200);
+  res.on('data', function(data) {
+    var body = data.toString();
+    console.assert(body === 'biz');
+  });
   console.log('</--- test ' + res.req.method +
     ' ' + res.req.path +
     ' --->');
