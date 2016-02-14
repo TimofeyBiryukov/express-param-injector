@@ -2,8 +2,37 @@
 
 # Express.js Params Injector
 
-[introduction]
+![doc image](./doc.png)
 
+How often your express.js route or controller function starts out like this?
+
+    app.get('/calculateAge', function(req, res, next) {
+      var id = req.query['id'];
+      var name = req.body['name'];
+      var birthYear = req.body['birthYear'];
+       
+      // do what ever ...
+      res.end();
+    });
+
+Request:
+
+    POST /calculateAge?id=1
+    
+    {
+        "name": "Tim",
+        "birthYear": 1993
+    }
+
+In my experience that happens all the time. Now, wouldn't it be nice if you can write parameters you want as a function arguments instead of req, res objects and then start extracting them. If any request is changed, remembering to change you route function to represent new arguments.
+That is what I thought to my self and wrote this micro lib. I was inspired by AngularJS dependency injection approach and used same concepts here. With this lib route function can look like this:
+
+    app.get('/calculateAge', Injector.IC(function(id, name, birthYear) {
+        // do what ever ...
+        this.res.end();
+    }));
+    
+See Usage section for more examples.
 
 # Installation
 
@@ -32,6 +61,18 @@ Then you can write any parameters names that you want to be injected as function
       res.end(name + ' is ' + countedAge + ' years old');
     }));
   
+Closer look:
+
+    Injector.IC(function(firstParam, req, res, anotherParam, next, lastParam) {
+      // firstParam, anotherParam, lastParam - parameter in query, params or body (bodyParser), param injection
+      // req - express.js request object, smart injection
+      // res - express.js response object, smart injection
+      // name - parameter in query, params or body (bodyParser), param injection
+      // next - express.js callback function for middleware, smart injection
+    
+      // and order does not matter!
+    });
+
 This can be applied to any callback express function that expects req, res to be first two params, and next callback will work as well:
 
     app.use(Injector.IC(function(id, next) {
@@ -48,7 +89,7 @@ This can be applied to any callback express function that expects req, res to be
  
  In case you have to have a specific `this` inside your route you can pass a scope function as a last parameter to Injector.IC:
  
- (If there is a need to still refer to Injector self param key can be ussed)
+ (If there is a need to still refer to Injector `self` param key can be used)
  
        /** @constructor */
        function Constructor() {}
