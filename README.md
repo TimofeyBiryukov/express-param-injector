@@ -37,14 +37,14 @@ This can be applied to any callback express function that expects req, res to be
     app.use(Injector.IC(function(id, next) {
       // check id here
       next();
-    });
+    }));
 
 `Request`, `response` and `next` alternatively can be accessed through `this` inside route function:
 
     app.post('/add', Injector.IC(function(a, b) {
       var result = a + b;
       this.res.end(result);  
-    });
+    }));
  
  In case you have to have a specific `this` inside your route you can pass a scope function as a last parameter to Injector.IC:
  
@@ -70,7 +70,7 @@ This can be applied to any callback express function that expects req, res to be
            res.status(400);
          }
          res.end();
-       }, myConstructor));
+       }, myConstructor)));
  
  Client can pass parameters in URL string or body with express.js body parser, parameters will be found and injected in following order:
  
