@@ -1,6 +1,6 @@
 {
   "name": "express-param-injector",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Parameters injection from arguments for express.js route functions",
   "main": "index.js",
   "dependencies": {},
