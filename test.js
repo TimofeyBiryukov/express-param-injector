@@ -81,13 +81,14 @@ app.get('/foo/bar/:biz', Injector.IC(function(biz) {
 }));
 
 
-app.get('/arrayNotation', Injector.IC(['foo-bar-biz', function(fooBarBiz) {
+app.get('/arrayNotation', Injector.IC(['foo-bar-biz', 'response',
+    function(fooBarBiz, response) {
   if (fooBarBiz) {
     this.res.status(200);
   } else {
     this.res.status(400);
   }
-  this.res.end(fooBarBiz);
+  response.end(fooBarBiz);
 }]));
 
 

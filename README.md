@@ -67,7 +67,6 @@ Closer look:
       // firstParam, anotherParam, lastParam - parameter in query, params or body (bodyParser), param injection
       // req - express.js request object, smart injection
       // res - express.js response object, smart injection
-      // name - parameter in query, params or body (bodyParser), param injection
       // next - express.js callback function for middleware, smart injection
     
       // and order does not matter!
@@ -80,12 +79,18 @@ This can be applied to any callback express function that expects req, res to be
       next();
     }));
 
-`Request`, `response` and `next` alternatively can be accessed through `this` inside route function:
+`Request`, `response` and `next` can be accessed through `this` inside route function:
 
     app.post('/add', Injector.IC(function(a, b) {
       var result = a + b;
-      this.res.end(result);  
+      this.res.end(result);
     }));
+    
+Client can pass parameters in URL string or body with express.js body parser, parameters will be found and injected in following order:
+ 
+ 1. request.query;
+ 2. request.params;
+ 3. request.body; // if exists
  
  In case you have to have a specific `this` inside your route you can pass a scope function as a last parameter to Injector.IC:
  
@@ -99,10 +104,7 @@ This can be applied to any callback express function that expects req, res to be
    
        var myConstructor = new Constructor();
        
-       app.get('/checkId', Injector.IC(function(id, res, self) {
-          // this is now `myConstructor`
-          // but self.req and self.res are now avalible 
-          
+       app.get('/checkId', Injector.IC(function(id, res) {
          if (this.checkId(id)) {
            res.status(200);
          } else {
@@ -119,11 +121,29 @@ If there is a need to still refer to Injector `self` (or `injector`) param key c
           injector.res.end('ID is ' + id);
        }, myConstructor));
  
- Client can pass parameters in URL string or body with express.js body parser, parameters will be found and injected in following order:
- 
- 1. request.query;
- 2. request.params;
- 3. request.body; // if exists
+#### Array Notation (parameters with "-")
+
+You might say that your parameters would not always match JavaScript function argument format. For example if you want to use `-` in your request parameters.
+Or just want to have something like this "my!crazy-"param" and still want it to be injected. That where Array Notation comes in handy.
+Syntax is inspired by AngularJS and works quite the same, but serves another purpose. Example: 
+
+    /**
+     * GET /dafaq?my!crazy-"param=crazy-value *
+     */
+    app.get('/crazyRoute', Injector.IC(['my!crazy-"param', function(crazyParam) {
+      // crazyParam = 'crazy-value'
+      this.res.end('crazyValue - '+ crazyParam);
+    }]));
+
+Req, res, next can still be accessed as before, nothing changes. And can be injected in similar manner:
+
+    var crazyRoute = Injector.IC(['my!crazy-"param', 'res', function(crazyParam, res) {
+      // res is ServerResponse object
+      res.end('OK');
+    }]);
+     
+    app.get('/crazyRoute', crazyRoute);
+
  
 ### Have a nice day :)
 
