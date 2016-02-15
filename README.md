@@ -89,8 +89,6 @@ This can be applied to any callback express function that expects req, res to be
  
  In case you have to have a specific `this` inside your route you can pass a scope function as a last parameter to Injector.IC:
  
- (If there is a need to still refer to Injector `self` param key can be used)
- 
        /** @constructor */
        function Constructor() {}
    
@@ -112,6 +110,14 @@ This can be applied to any callback express function that expects req, res to be
          }
          res.end();
        }, myConstructor)));
+       
+If there is a need to still refer to Injector `self` (or `injector`) param key can be used:
+
+       app.get('/checkId', Injector.IC(function(id, self, injector) {
+          // this = myConstructor
+          // self, injector both refer injector scope
+          injector.res.end('ID is ' + id);
+       }, myConstructor));
  
  Client can pass parameters in URL string or body with express.js body parser, parameters will be found and injected in following order:
  
