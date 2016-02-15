@@ -8,36 +8,24 @@ var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 
 /**
  * @constructor
- * @param {function} fn
+ * @param {Function|Array.<String|Function>} fn
  * @param {?express.request} opt_req
  * @param {?express.response} opt_res
  * @param {?function} opt_next
  */
 function Injector(fn, opt_req, opt_res, opt_next) {
+
   /**
    *
    * @type {express.request}
    */
-  this.request = opt_req;
-
-  /**
-   *
-   * @type {?express.request}
-   */
-  this.req = opt_req;
+  this.req = this.request = opt_req;
 
   /**
    *
    * @type {?express.response}
    */
-  this.response = opt_res;
-
-  /**
-   *
-   * @type {?express.response}
-   */
-  this.res = opt_res;
-
+  this.res = this.response = opt_res;
 
   /**
    * @type {?function}
@@ -48,13 +36,24 @@ function Injector(fn, opt_req, opt_res, opt_next) {
    *
    * @type {Function}
    */
-  this.fn = fn;
+  this.fn = function() {};
 
   /**
    *
    * @type {boolean}
    */
-  this.inited = false; // set to true when we get req & res objects
+  this.arrayNotation = false;
+
+  /**
+   *
+   * @type {Array.<String>}
+   */
+  this.__presetParams = [];
+
+
+  if (fn) {
+    this.setFn(fn);
+  }
 }
 
 
@@ -65,7 +64,6 @@ function Injector(fn, opt_req, opt_res, opt_next) {
 Injector.prototype.setReq = function(req) {
   this.request = req;
   this.req = req;
-  this.checkInit();
 };
 
 
@@ -76,7 +74,6 @@ Injector.prototype.setReq = function(req) {
 Injector.prototype.setRes = function(res) {
   this.response = res;
   this.res = res;
-  this.checkInit();
 };
 
 
@@ -91,13 +88,34 @@ Injector.prototype.setNext = function(next) {
 
 /**
  *
- * @return {boolean}
+ * @param {Function|Array.<String|Function>} fn
+ * @return {function} fn
  */
-Injector.prototype.checkInit = function() {
-  this.inited = !!(this.request && this.req &&
-      this.response && this.res);
+Injector.prototype.parseFn = function(fn) {
+  if (Array.isArray(fn)) {
+    this.arrayNotation = true;
+    this.__presetParams = fn.slice(0, fn.length - 1);
+    fn = fn[fn.length - 1];
+  }
 
-  return this.inited;
+  return fn;
+};
+
+
+/**
+ *
+ * @param {Function|Array.<String|Function>} fn
+ */
+Injector.prototype.setFn = function(fn) {
+  this.fn = this.parseFn(fn);
+};
+
+
+/**
+ * @return {Function}
+ */
+Injector.prototype.getFn = function() {
+  return this.fn;
 };
 
 
@@ -106,6 +124,9 @@ Injector.prototype.checkInit = function() {
  * @return {Array.<string|number|boolean>}
  */
 Injector.prototype.getInjections = function() {
+  if (this.arrayNotation) {
+    return this.injectParameters(this.__presetParams);
+  }
   return this.injectParameters(Injector.extractArgs(this.fn));
 };
 
@@ -183,7 +204,8 @@ Injector.IC = function(fn, opt_scope) {
     injector.setReq(req);
     injector.setRes(res);
     injector.setNext(next);
-    fn.apply(opt_scope || injector, injector.getInjections());
+    injector.getFn().apply(opt_scope || injector,
+        injector.getInjections());
   };
 };
 

@@ -81,6 +81,16 @@ app.get('/foo/bar/:biz', Injector.IC(function(biz) {
 }));
 
 
+app.get('/arrayNotation', Injector.IC(['foo-bar-biz', function(fooBarBiz) {
+  if (fooBarBiz) {
+    this.res.status(200);
+  } else {
+    this.res.status(400);
+  }
+  this.res.end(fooBarBiz);
+}]));
+
+
 app.listen(PORT);
 console.log('<--- Server lifted --->');
 console.log('http://127.0.0.1:' + PORT);
@@ -160,14 +170,14 @@ req = http.request({
   res.on('data', function(buffer) {
     var body = buffer.toString();
     console.log(body);
-    console.assert(body === '_stinrg, 1, true, [object Object]');
+    console.assert(body === '_string, 1, true, [object Object]');
     console.log('</--- test ' + res.req.method +
         ' ' + res.req.path +
         ' --->');
   });
 });
 req.write(JSON.stringify({
-  _sting: '_stinrg',
+  _sting: '_string',
   _number: 1,
   _boolean: true,
   _object: {
@@ -252,6 +262,24 @@ req = http.get('http://127.0.0.1:' + PORT + '/foo/bar/biz', function test(res) {
   res.on('data', function(data) {
     var body = data.toString();
     console.assert(body === 'biz');
+  });
+  console.log('</--- test ' + res.req.method +
+    ' ' + res.req.path +
+    ' --->');
+});
+
+
+/**
+ * testing array notation
+ */
+req = http.get('http://127.0.0.1:' + PORT + '/arrayNotation?foo-bar-biz=foo_bar_biz', function test(res) {
+  console.log('<--- test ' + res.req.method +
+    ' ' + res.req.path +
+    ' --->');
+  console.assert(res.statusCode === 200);
+  res.on('data', function(data) {
+    var body = data.toString();
+    console.assert(body === 'foo_bar_biz');
   });
   console.log('</--- test ' + res.req.method +
     ' ' + res.req.path +
