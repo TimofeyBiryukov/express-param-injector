@@ -92,7 +92,8 @@ Client can pass parameters in URL string or body with express.js body parser, pa
  2. request.params;
  3. request.body; // if exists
  
- In case you have to have a specific `this` inside your route you can pass a scope function as a last parameter to Injector.IC:
+ 
+In case you have to have a specific `this` inside your route you can pass a scope function as a last parameter to Injector.IC:
  
        /** @constructor */
        function Constructor() {}
