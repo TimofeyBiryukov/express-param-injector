@@ -129,7 +129,7 @@ Or just want to have something like this "my!crazy-"param" and still want it to 
 Syntax is inspired by AngularJS and works quite the same, but serves another purpose. Example: 
 
     /**
-     * GET /dafaq?my!crazy-"param=crazy-value *
+     * GET /crazyRoute?my!crazy-"param=crazy-value *
      */
     app.get('/crazyRoute', Injector.IC(['my!crazy-"param', function(crazyParam) {
       // crazyParam = 'crazy-value'
