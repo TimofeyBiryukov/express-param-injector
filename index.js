@@ -132,7 +132,7 @@ Injector.prototype.injectParameters = function(argumentNames) {
     if (paramName === 'next') {
       return self.next;
     }
-    if (paramName === 'self') {
+    if (paramName === 'self' || paramName === 'injector') {
       return self;
     }
 
