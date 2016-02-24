@@ -168,14 +168,17 @@ Injector.prototype.injectParameters = function(argumentNames) {
  * @return {*}
  */
 Injector.prototype.getReqParam = function(paramName, opt_default) {
-  var body;
+  var body, param, query;
   if (this.req.body) {
     body = this.req.body[paramName];
   }
-  // TODO: check if this.req.params & this.req.quesry are in existence
-  return this.req.params[paramName] ||
-      this.req.query[paramName] ||
-      body || opt_default;
+  if (this.req.params) {
+    param = this.req.params[paramName];
+  }
+  if (this.req.query) {
+    query = this.req.query[paramName];
+  }
+  return param || query || body || opt_default;
 };
 
 
