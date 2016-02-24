@@ -9,15 +9,15 @@ var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 /**
  * @constructor
  * @param {Function|Array.<String|Function>} fn
- * @param {?express.request} opt_req
- * @param {?express.response} opt_res
- * @param {?function} opt_next
+ * @param {express.request=} opt_req
+ * @param {express.response=} opt_res
+ * @param {function=} opt_next
  */
 function Injector(fn, opt_req, opt_res, opt_next) {
 
   /**
    *
-   * @type {express.request}
+   * @type {?express.request}
    */
   this.req = this.request = opt_req;
 
@@ -164,7 +164,7 @@ Injector.prototype.injectParameters = function(argumentNames) {
 
 /**
  * @param {string} paramName
- * @param {?*} opt_default
+ * @param {*=} opt_default
  * @return {*}
  */
 Injector.prototype.getReqParam = function(paramName, opt_default) {
@@ -172,6 +172,7 @@ Injector.prototype.getReqParam = function(paramName, opt_default) {
   if (this.req.body) {
     body = this.req.body[paramName];
   }
+  // TODO: check if this.req.params & this.req.quesry are in existence
   return this.req.params[paramName] ||
       this.req.query[paramName] ||
       body || opt_default;
@@ -195,7 +196,7 @@ Injector.extractArgs = function(fn) {
 /**
  *
  * @param {function} fn
- * @param {?Object} opt_scope
+ * @param {Object=} opt_scope
  * @return {Function}
  */
 Injector.IC = function(fn, opt_scope) {
